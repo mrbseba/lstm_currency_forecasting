@@ -102,7 +102,7 @@ def main():
             last_60_days = df['Close'].tail(60)
             
             # Plot historical data for 60 days and predicted prices for 14 days
-            st.subheader("Historical Data and Predicted Prices")
+            st.subheader("Historical Data for the Last 60 Days and Predicted Prices for the Next 14 Days")
             st.line_chart(last_60_days, use_container_width=True, key="historical_data")
             st.line_chart(prediction_df, use_container_width=True, key="predicted_prices")
 
