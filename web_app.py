@@ -41,6 +41,20 @@ def main():
             
             st.subheader("Historical Stock Data")
             st.write(df.head())
+            
+            # Additional analysis plots
+            st.subheader("Additional Analysis")
+            
+            # Moving Average (MA) plot
+            ma_period = st.slider("Select MA Period (in days):", 1, 30, 7)
+            df['MA'] = df['Close'].rolling(window=ma_period).mean()
+            st.line_chart(df['MA'], use_container_width=True)
+            
+            # Mean and Standard Deviation (STD)
+            mean = df['Close'].mean()
+            std = df['Close'].std()
+            st.write(f"Mean Price: {mean:.2f}")
+            st.write(f"Standard Deviation: {std:.2f}")
     
     elif page == "Prediction":
         st.header("Make Stock Price Predictions")
