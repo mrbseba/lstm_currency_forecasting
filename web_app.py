@@ -99,7 +99,7 @@ def main():
             prediction_df = pd.DataFrame(predictions, columns=['Predicted Price'], index=date_range)
             
             # Create a DataFrame for the last 60 days of historical data
-            last_60_days = df['Close'].tail(60).reset_index(drop=True)
+            last_60_days = df['Close'].tail(60).reset_index(drop=True)  # Reset the index
             
             # Plot historical data for 60 days and predicted prices for 14 days
             st.subheader("Historical Data for the Last 60 Days and Predicted Prices for the Next 14 Days")
