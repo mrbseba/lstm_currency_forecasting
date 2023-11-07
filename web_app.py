@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+import yfinance as yf  # For fetching data from Yahoo Finance
 from tensorflow.keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
 
@@ -25,14 +26,16 @@ def main():
     
     st.header("Make Stock Price Predictions")
     
-    # User input for data
-    st.subheader("Input Historical Stock Prices")
-    uploaded_file = st.file_uploader("Upload a CSV file with historical stock prices:", type=["csv"])
+    # User input for stock symbol and period
+    st.subheader("Select Stock and Period")
+    symbol = st.text_input("Enter Stock Symbol (e.g., AAPL):")
+    period = st.slider("Select Historical Data Period (in years):", 1, 10, 5)
     
-    if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file)
+    if symbol:
+        # Fetch historical stock price data from Yahoo Finance
+        df = yf.download(symbol, period=f"{period}y")
         
-        st.subheader("Uploaded Stock Data")
+        st.subheader("Historical Stock Data")
         st.write(df.head())
         
         # Preprocess data
