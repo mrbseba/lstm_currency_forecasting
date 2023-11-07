@@ -48,7 +48,9 @@ def main():
             # Moving Average (MA) plot
             ma_period = st.slider("Select MA Period (in days):", 1, 30, 7)
             df['MA'] = df['Close'].rolling(window=ma_period).mean()
-            st.line_chart(df['MA'], use_container_width=True)
+            
+            # Plot both data and MA
+            st.line_chart(df[['Close', 'MA']], use_container_width=True)
             
             # Mean and Standard Deviation (STD)
             mean = df['Close'].mean()
