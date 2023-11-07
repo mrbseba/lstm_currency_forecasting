@@ -53,18 +53,22 @@ def analysis_and_prediction():
         if df is None or df.empty:
             st.error("Data not available for this symbol.")
         else:
-            # Load the machine learning model
-            model = load_model('model.h5')
+            # Load the machine learning model (You should replace this with your model loading code)
+            # model = load_model('model.h5')
 
             # Data preprocessing and prediction code here (adapt to your model)
 
-            # Display analysis results, predictions, and charts
+            # Display analysis results, predictions, and charts (You should customize this part)
+
+            st.subheader(f"Analysis and Prediction for {symbol}")
+            st.write("Your analysis and prediction results go here.")
+            # You can display charts, tables, or any other relevant information here.
 
 # Create navigation in the sidebar
 st.sidebar.title("Navigation")
 page = st.sidebar.selectbox("Go to", ("Data Visualization", "Analysis and Prediction"))
 
-# Display the selected page based on user's choice
+# Display the selected page based on the user's choice
 if page == "Data Visualization":
     data_visualization()
 elif page == "Analysis and Prediction":
