@@ -24,31 +24,50 @@ def main():
     # Load the pre-trained model
     model = load_model("model.h5")
     
-    st.header("Make Stock Price Predictions")
+    st.sidebar.header("Navigation")
+    page = st.sidebar.selectbox("Select a Page", ["Analysis", "Prediction"])
     
-    # User input for stock symbol and period
-    st.subheader("Select Stock and Period")
-    symbol = st.text_input("Enter Stock Symbol (e.g., AAPL):")
-    period = st.slider("Select Historical Data Period (in years):", 1, 10, 5)
+    if page == "Analysis":
+        st.header("Stock Price Analysis")
+        
+        # User input for stock symbol and period
+        st.subheader("Select Stock and Period")
+        symbol = st.text_input("Enter Stock Symbol (e.g., AAPL):")
+        period_days = st.slider("Select Historical Data Period (in days):", 1, 365, 30)
+        
+        if symbol:
+            # Fetch historical stock price data from Yahoo Finance
+            df = yf.download(symbol, period=f"{period_days}d")
+            
+            st.subheader("Historical Stock Data")
+            st.write(df.head())
     
-    if symbol:
-        # Fetch historical stock price data from Yahoo Finance
-        df = yf.download(symbol, period=f"{period}y")
+    elif page == "Prediction":
+        st.header("Make Stock Price Predictions")
         
-        st.subheader("Historical Stock Data")
-        st.write(df.head())
+        # User input for stock symbol and period
+        st.subheader("Select Stock and Period")
+        symbol = st.text_input("Enter Stock Symbol (e.g., AAPL):")
+        period_days = st.slider("Select Historical Data Period (in days):", 1, 365, 30)
         
-        # Preprocess data
-        data, scaler = preprocess_data(df)
-        
-        # Make predictions
-        predictions = make_predictions(model, data, scaler)
-        
-        st.subheader("Predicted Stock Prices")
-        st.write(predictions)
-        
-        st.subheader("Predicted Price Chart")
-        st.line_chart(predictions)
+        if symbol:
+            # Fetch historical stock price data from Yahoo Finance
+            df = yf.download(symbol, period=f"{period_days}d")
+            
+            st.subheader("Historical Stock Data")
+            st.write(df.head())
+            
+            # Preprocess data
+            data, scaler = preprocess_data(df)
+            
+            # Make predictions
+            predictions = make_predictions(model, data, scaler)
+            
+            st.subheader("Predicted Stock Prices")
+            st.write(predictions)
+            
+            st.subheader("Predicted Price Chart")
+            st.line_chart(predictions)
 
 if __name__ == "__main__":
     main()
