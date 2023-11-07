@@ -99,12 +99,11 @@ def main():
             prediction_df = pd.DataFrame(predictions, columns=['Predicted Price'], index=date_range)
             
             # Create a DataFrame for the last 60 days of historical data
-            last_60_days = df['Close'].tail(60)
-            last_60_days.index = date_range[-60:]  # Match the index with date_range
+            last_60_days = df['Close'].tail(60).reset_index()
             
-            # Plot historical data and predicted prices
+            # Plot historical data for 60 days and predicted prices for 14 days
             st.subheader("Historical Data and Predicted Prices")
-            st.line_chart(pd.concat([last_60_days, prediction_df['Predicted Price']], axis=1), use_container_width=True)
+            st.line_chart(last_60_days.set_index('Date').join(prediction_df), use_container_width=True)
 
 if __name__ == "__main__":
     main()
