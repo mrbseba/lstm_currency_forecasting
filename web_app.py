@@ -12,9 +12,18 @@ def preprocess_data(df):
     return scaled_data, scaler
 
 # Function to make predictions
-def make_predictions(model, data, scaler):
-    predictions = model.predict(data)
-    predictions = scaler.inverse_transform(predictions)
+def make_predictions(model, data, scaler, num_days):
+    predictions = []
+    for i in range(num_days):
+        # Predict the next day's price
+        prediction = model.predict(data[-1].reshape(1, -1))
+        predictions.append(prediction[0])
+        
+        # Append the prediction to the data for the next prediction
+        data = np.append(data, prediction.reshape(1, -1), axis=0)
+    
+    # Inverse transform predictions
+    predictions = scaler.inverse_transform(np.array(predictions).reshape(-1, 1))
     return predictions
 
 # Streamlit app
@@ -64,7 +73,7 @@ def main():
         # User input for stock symbol and period
         st.subheader("Select Stock and Period")
         symbol = st.text_input("Enter Stock Symbol (e.g., AAPL):")
-        period_days = st.slider("Select Historical Data Period (in days):", 1, 365, 30)
+        period_days = st.slider("Select Historical Data Period (in days):", 1, 365, 60)
         
         if symbol:
             # Fetch historical stock price data from Yahoo Finance
@@ -76,14 +85,23 @@ def main():
             # Preprocess data
             data, scaler = preprocess_data(df)
             
+            # Number of days to predict
+            num_days = 14
+            
             # Make predictions
-            predictions = make_predictions(model, data, scaler)
+            predictions = make_predictions(model, data, scaler, num_days)
+            
+            # Create a date range for the next 14 days
+            date_range = pd.date_range(start=df.index[-1] + pd.Timedelta(days=1), periods=num_days, closed='right')
+            
+            # Create a DataFrame for predictions
+            prediction_df = pd.DataFrame(predictions, columns=['Predicted Price'], index=date_range)
             
             st.subheader("Predicted Stock Prices")
-            st.write(predictions)
+            st.write(prediction_df)
             
             st.subheader("Predicted Price Chart")
-            st.line_chart(predictions)
+            st.line_chart(df['Close'].append(prediction_df['Predicted Price']), use_container_width=True)
 
 if __name__ == "__main__":
     main()
