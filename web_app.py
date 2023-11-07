@@ -4,6 +4,7 @@ import pandas as pd
 import yfinance as yf  # For fetching data from Yahoo Finance
 from tensorflow.keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
+import plotly.express as px
 
 # Function to preprocess data
 def preprocess_data(df):
@@ -58,8 +59,9 @@ def main():
             ma_period = st.slider("Select MA Period (in days):", 1, 30, 7)
             df['MA'] = df['Close'].rolling(window=ma_period).mean()
             
-            # Plot both data and MA
-            st.line_chart(df[['Close', 'MA']], use_container_width=True)
+            # Plot both data and MA using Plotly
+            fig = px.line(df, x=df.index, y=['Close', 'MA'], labels={'index': 'Date', 'value': 'Price'})
+            st.plotly_chart(fig, use_container_width=True)
             
             # Mean and Standard Deviation (STD)
             mean = df['Close'].mean()
@@ -99,12 +101,17 @@ def main():
             prediction_df = pd.DataFrame(predictions, columns=['Predicted Price'], index=date_range)
             
             # Create a DataFrame for the last 60 days of historical data
-            last_60_days = df['Close'].tail(60).reset_index(drop=True)  # Reset the index
+            last_60_days = df.tail(60).reset_index(drop=True)  # Reset the index
             
-            # Plot historical data for 60 days and predicted prices for 14 days
-            st.subheader("Historical Data for the Last 60 Days and Predicted Prices for the Next 14 Days")
-            st.line_chart(last_60_days, use_container_width=True, key="historical_data")
-            st.line_chart(prediction_df, use_container_width=True, key="predicted_prices")
+            # Plot historical data for 60 days and predicted prices for 14 days using Plotly
+            historical_fig = px.line(last_60_days, x=last_60_days.index, y='Close', labels={'index': 'Day', 'Close': 'Price'})
+            prediction_fig = px.line(prediction_df, x=prediction_df.index, y='Predicted Price', labels={'index': 'Date', 'Predicted Price': 'Price'})
+            
+            st.subheader("Historical Data for the Last 60 Days")
+            st.plotly_chart(historical_fig, use_container_width=True)
+            
+            st.subheader("Predicted Prices for the Next 14 Days")
+            st.plotly_chart(prediction_fig, use_container_width=True)
 
 if __name__ == "__main__":
     main()
