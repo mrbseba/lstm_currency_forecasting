@@ -59,8 +59,7 @@ else:
 
         # display the title for stock name
         st.write(f"Stock data for {symbol}")
-        st.dataframe(df)
-
+        st.dataframe(df)        
         # fancy chart for the display the open and closed price
         def plot_raw_data():
             fig = go.Figure()
@@ -72,7 +71,7 @@ else:
 
         # st.subheader('Closing Price vs Time Chart')
         plot_raw_data()
-
+       
         # fancy code for 100 & 200MA
         ma100 = df.Close.rolling(100).mean()
         ma200 = df.Close.rolling(200).mean()
@@ -90,14 +89,9 @@ else:
 
         st.plotly_chart(fig)
 
-
-
         # Splitting data into Training and Testing
         data_training = pd.DataFrame(df['Close'][0:int(len(df) * 0.70)])
         data_testing = pd.DataFrame(df['Close'][int(len(df) * 0.70):])
-
-        # print(data_training.shape)
-        # print(data_testing.shape)
 
         # scale the data
         from sklearn.preprocessing import MinMaxScaler
@@ -122,12 +116,12 @@ else:
             y_test.append(input_data[i, 0])
 
         x_test, y_test = np.array(x_test), np.array(y_test)
-
+        
         # make predictin
         y_predicted = model.predict(x_test)
 
         scaler = scaler.scale_
-
+        
         # scale the data
         scale_factor = 1/scaler[0]
         y_predicted = y_predicted * scale_factor
