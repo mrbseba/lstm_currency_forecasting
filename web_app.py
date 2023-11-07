@@ -92,7 +92,8 @@ def main():
             predictions = make_predictions(model, data, scaler, num_days)
             
             # Create a date range for the next 14 days
-            date_range = pd.date_range(start=df.index[-1] + pd.Timedelta(days=1), periods=num_days, closed='right')
+            last_date = df.index[-1]
+            date_range = pd.date_range(start=last_date + pd.Timedelta(days=1), periods=num_days)
             
             # Create a DataFrame for predictions
             prediction_df = pd.DataFrame(predictions, columns=['Predicted Price'], index=date_range)
