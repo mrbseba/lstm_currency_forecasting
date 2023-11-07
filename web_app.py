@@ -74,7 +74,7 @@ def main():
         st.subheader("Select Stock and Period")
         symbol = st.text_input("Enter Stock Symbol (e.g., AAPL):")
         period_days = st.slider("Select Historical Data Period (in days):", 1, 365, 60)
-        
+    
         if symbol:
             # Fetch historical stock price data from Yahoo Finance
             df = yf.download(symbol, period=f"{period_days}d")
@@ -99,11 +99,12 @@ def main():
             prediction_df = pd.DataFrame(predictions, columns=['Predicted Price'], index=date_range)
             
             # Create a DataFrame for the last 60 days of historical data
-            last_60_days = df['Close'].tail(60).reset_index()
+            last_60_days = df['Close'].tail(60)
             
             # Plot historical data for 60 days and predicted prices for 14 days
             st.subheader("Historical Data and Predicted Prices")
-            st.line_chart(last_60_days.set_index('Date').join(prediction_df), use_container_width=True)
+            st.line_chart(pd.concat([last_60_days, prediction_df['Predicted Price']]), use_container_width=True)
+
 
 if __name__ == "__main__":
     main()
