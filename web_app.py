@@ -107,6 +107,10 @@ def main():
             historical_fig = px.line(last_60_days, x=last_60_days.index, y='Close', labels={'index': 'Day', 'Close': 'Price'})
             prediction_fig = px.line(prediction_df, x=prediction_df.index, y='Predicted Price', labels={'index': 'Date', 'Predicted Price': 'Price'})
             
+            # Specify the line color for predicted prices (e.g., red)
+            prediction_fig = px.line(prediction_df, x=prediction_df.index, y='Predicted Price', labels={'index': 'Date', 'Predicted Price': 'Price'},
+                                      line_color='red')  # You can set the line_color here
+            
             st.subheader("Historical Data for the Last 60 Days")
             st.plotly_chart(historical_fig, use_container_width=True)
             
