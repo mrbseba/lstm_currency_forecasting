@@ -103,11 +103,14 @@ def main():
             # Create a DataFrame for the last 60 days of historical data
             last_60_days = df.tail(60).reset_index(drop=True)  # Reset the index
             
-            # Plot historical data for 60 days, predicted prices for 14 days, and combine them
-            combined_fig = px.line(last_60_days, x=last_60_days.index, y='Close', labels={'index': 'Day', 'Close': 'Price'}, title="Historical Data")
-            combined_fig.add_scatter(x=prediction_df.index, y=prediction_df['Predicted Price'], mode='lines', name='Predicted Prices')
+            # Plot historical data for 60 days and predicted prices for 14 days
+            st.subheader("Historical Data and Predicted Prices")
+            st.line_chart(last_60_days, use_container_width=True, key="historical_data")
+            st.line_chart(prediction_df, use_container_width=True, key="predicted_prices")
             
-            st.subheader("Combined Historical Data and Predicted Prices")
+            # Create a third plot combining historical and predicted data
+            combined_fig = px.line(df, x=df.index, y='Close', labels={'index': 'Date', 'Close': 'Price'}, title="Combined Data")
+            combined_fig.add_scatter(x=prediction_df.index, y=prediction_df['Predicted Price'], mode='lines', name='Predicted Price')
             st.plotly_chart(combined_fig, use_container_width=True)
 
 if __name__ == "__main__":
