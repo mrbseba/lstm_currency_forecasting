@@ -69,7 +69,7 @@ def main():
             st.write(f"Mean Price: {mean:.2f}")
             st.write(f"Standard Deviation: {std:.2f}")
 
-    elif page == "Prediction":
+        elif page == "Prediction":
         st.header("Make Stock Price Predictions")
         
         # User input for stock symbol and period
@@ -95,7 +95,7 @@ def main():
             
             # Make predictions
             predictions = make_predictions(model, data, scaler, num_days)
- 
+            
             # Create a DataFrame for predictions with a datetime index
             last_date = df.index[-1]
             date_range = pd.date_range(start=last_date + pd.Timedelta(days=1), periods=num_days)
