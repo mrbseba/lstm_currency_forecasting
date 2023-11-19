@@ -95,17 +95,7 @@ def main():
             
             # Make predictions
             predictions = make_predictions(model, data, scaler, num_days)
-
-             # Create a DataFrame for the last 60 days of historical data
-            last_60_days = df.tail(60).reset_index(drop=True)  # Reset the index
-            
-            # Plot historical data for 60 days and predicted prices for 14 days using Plotly
-            historical_fig = px.line(last_60_days, x=last_60_days.index, y='Close', labels={'index': 'Day', 'Close': 'Price'})
-            prediction_fig = px.line(prediction_df, x=prediction_df.index, y='Predicted Price', labels={'index': 'Date', 'Predicted Price': 'Price'})
-                        
-            st.subheader("Historical Data for the Last 60 Days")
-            st.plotly_chart(historical_fig, use_container_width=True)
-            
+ 
             # Create a DataFrame for predictions with a datetime index
             last_date = df.index[-1]
             date_range = pd.date_range(start=last_date + pd.Timedelta(days=1), periods=num_days)
