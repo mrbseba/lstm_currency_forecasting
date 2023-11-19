@@ -110,6 +110,6 @@ def main():
     
                 st.subheader("Combined Historical Data and Predicted Prices")
                 st.plotly_chart(combined_fig, use_container_width=True)
-
+    
 if __name__ == "__main__":
     main()
