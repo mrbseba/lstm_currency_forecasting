@@ -81,6 +81,9 @@ def main():
             # Fetch historical stock price data from Yahoo Finance
             df = yf.download(symbol, period=f"{period_days}d")
             
+            # Ensure the index is a datetime index
+            df.index = pd.to_datetime(df.index)
+
             st.subheader("Historical Stock Data")
             st.write(df.head())
             
@@ -93,30 +96,18 @@ def main():
             # Make predictions
             predictions = make_predictions(model, data, scaler, num_days)
             
-            # Create a date range for the next 14 days
+            # Create a DataFrame for predictions with a datetime index
             last_date = df.index[-1]
             date_range = pd.date_range(start=last_date + pd.Timedelta(days=1), periods=num_days)
-            
-            # Create a DataFrame for predictions
             prediction_df = pd.DataFrame(predictions, columns=['Predicted Price'], index=date_range)
             
-            # Create a DataFrame for the last 60 days of historical data
-            last_60_days = df.tail(60).reset_index(drop=True)  # Reset the index
-            
-            # Plot historical data for 60 days and predicted prices for 14 days using Plotly
-            historical_fig = px.line(last_60_days, x=last_60_days.index, y='Close', labels={'index': 'Day', 'Close': 'Price'})
-            prediction_fig = px.line(prediction_df, x=prediction_df.index, y='Predicted Price', labels={'index': 'Date', 'Predicted Price': 'Price'})
-                        
-            st.subheader("Historical Data for the Last 60 Days")
-            st.plotly_chart(historical_fig, use_container_width=True)
-            
-            st.subheader("Predicted Prices for the Next 14 Days")
-            st.plotly_chart(prediction_fig, use_container_width=True)
-            
-            # Create a third plot combining historical and predicted data
-            combined_df = pd.concat([last_60_days, prediction_df])
-            combined_fig = px.line(combined_df, x=combined_df.index, y=['Close', 'Predicted Price'], labels={'index': 'Date', 'value': 'Price'})
-            
+            # Combine historical and predicted data
+            combined_df = pd.concat([df['Close'].tail(60), prediction_df['Predicted Price']], axis=1)
+            combined_df.columns = ['Close', 'Predicted Price']  # Rename the columns for clarity
+
+            # Create the plot
+            combined_fig = px.line(combined_df, x=combined_df.index, y=['Close', 'Predicted Price'], labels={'index': 'Date', 'value': 'Price'}, title='Combined Historical Data and Predicted Prices')
+
             st.subheader("Combined Historical Data and Predicted Prices")
             st.plotly_chart(combined_fig, use_container_width=True)
 
